@@ -270,7 +270,7 @@ public class SftpClient {
 ## Strategy
 - un des patterns plus importants et utilisés
 - Ne pas toucher `class` qui wrappe `strategy` comme `attribut`
-- mais changer juste le `strategy`
+- mais changer juste le `strategy` qui a `overrided method` différent.
 - exemple:
 ```java
 package design.strategy;
