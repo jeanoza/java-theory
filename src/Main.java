@@ -1,26 +1,35 @@
 import design.adaptor.*;
 import design.decorator.*;
+import design.facade.SftpClient;
 import design.observer.Button;
 import design.observer.IButtonListener;
 import design.proxy.Browser;
 import design.proxy.IBrowser;
 import design.proxy.ProxyBrowser;
+import design.strategy.*;
 
 public class Main {
     public static void main(String[] args) {
-        Button button = new Button("button");
+        Encoder encoder = new Encoder();
+        //base64
+        EncodingStrategy base64 = new Base64Strategy();
 
-        /* class anonyme */
-        button.addEventListener(new IButtonListener() {
-            @Override
-            public void clickEvent(String event) {
-                System.out.println(event);
-            }
-        });
+        //normal
+        EncodingStrategy normal = new NormalStrategy();
 
-        button.click("Event Message: click 1");
-        button.click("Event Message: click 2");
-        button.click("Event Message: click 3");
-        button.click("Event Message: click 4");
+        //abcd append
+        EncodingStrategy append = new AppendStrategy();
+
+        String message = "Hello java";
+        encoder.setEncodingStrategy(base64);
+        String base64Result = encoder.getMessage(message);
+        encoder.setEncodingStrategy(normal);
+        String normalResult = encoder.getMessage(message);
+        encoder.setEncodingStrategy(append);
+        String appendResult = encoder.getMessage(message);
+
+        System.out.println(base64Result);
+        System.out.println(normalResult);
+        System.out.println(appendResult);
     }
 }

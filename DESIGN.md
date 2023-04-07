@@ -223,5 +223,116 @@ public class Main {
 
 ```
 
+## Facade
+- Mettre la dépendence des multiples `Objects` dans un `Object`(Facade)
+- C'est util pour les objets sont lié l'un à l'autre.
+- exemple:
+```java
+package design.facade;
+
+public class SftpClient {
+    private Ftp ftp;
+    private Reader reader;
+    private Writer writer;
+
+    public SftpClient(Ftp ftp, Reader reader, Writer writer) {
+        this.ftp = ftp;
+        this.reader = reader;
+        this.writer = writer;
+    }
+    public SftpClient(String host, int port, String path, String fileName) {
+        this.ftp = new Ftp(host, port, path);
+        this.reader = new Reader(fileName);
+        this.writer = new Writer(fileName);
+    }
+    public void connect() {
+        ftp.connect();
+        ftp.moveDirectory();
+        writer.fileConnect();
+        reader.fileConnect();
+    }
+    public void disconnect() {
+        writer.fileDisconnect();
+        reader.fileDisconnect();
+        ftp.disconnect();
+    }
+    public void read() {
+        reader.read();
+    }
+    public void write() {
+        writer.write();
+    }
+}
 
 
+```
+
+## Strategy
+- un des patterns plus importants et utilisés
+- Ne pas toucher `class` qui wrappe `strategy` comme `attribut`
+- mais changer juste le `strategy`
+- exemple:
+```java
+package design.strategy;
+
+
+public interface EncodingStrategy {
+  public String encode(String text);
+}
+public class Base64Strategy implements EncodingStrategy{
+    @Override
+    public String encode(String text) {
+        return Base64.getEncoder().encodeToString(text.getBytes());
+    }
+}
+
+public class AppendStrategy implements EncodingStrategy {
+  @Override
+  public String encode(String text) {
+    return "abcd"+text;
+  }
+}
+public class NormalStrategy implements EncodingStrategy{
+  @Override
+  public String encode(String text) {
+    return text;
+  }
+}
+
+public class Encoder {
+  private EncodingStrategy encodingStrategy;
+
+  public String getMessage(String message){
+    return this.encodingStrategy.encode(message);
+  }
+  public void setEncodingStrategy(EncodingStrategy encodingStrategy) {
+    this.encodingStrategy = encodingStrategy;
+  }
+}
+public class Main {
+    public static void main(String[] args) {
+        Encoder encoder = new Encoder();
+        //base64
+        EncodingStrategy base64 = new Base64Strategy();
+
+        //normal
+        EncodingStrategy normal = new NormalStrategy();
+
+        //abcd append
+        EncodingStrategy append = new AppendStrategy();
+
+        String message = "Hello java";
+        encoder.setEncodingStrategy(base64);
+        String base64Result = encoder.getMessage(message);
+        encoder.setEncodingStrategy(normal);
+        String normalResult = encoder.getMessage(message);
+        encoder.setEncodingStrategy(append);
+        String appendResult = encoder.getMessage(message);
+
+        System.out.println(base64Result);
+        System.out.println(normalResult);
+        System.out.println(appendResult);
+    }
+}
+
+```
