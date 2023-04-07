@@ -1,26 +1,26 @@
 import design.adaptor.*;
+import design.decorator.*;
+import design.observer.Button;
+import design.observer.IButtonListener;
+import design.proxy.Browser;
+import design.proxy.IBrowser;
+import design.proxy.ProxyBrowser;
 
 public class Main {
     public static void main(String[] args) {
-        /* singleton
-        ClassA classA = new ClassA();
-        ClassB classB = new ClassB();
-        System.out.println("Singleton test: ClassA.socketClient.equals(ClassB.socketClient)");
-        System.out.println(classA.getSocketClient().equals(classB.getSocketClient()));
-         */
-        HairDryer hairDryer = new HairDryer();
-        connect(hairDryer);
+        Button button = new Button("button");
 
-        Cleaner cleaner = new Cleaner();
-        Electronic110V adaptor =  new SocketAdapter(cleaner);
-        connect(adaptor);
+        /* class anonyme */
+        button.addEventListener(new IButtonListener() {
+            @Override
+            public void clickEvent(String event) {
+                System.out.println(event);
+            }
+        });
 
-        AirConditioner airConditioner = new AirConditioner();
-        Electronic110V adaptor2 = new SocketAdapter(airConditioner);
-        connect(adaptor2);
-    }
-
-    public static void connect(Electronic110V electronic110V) {
-        electronic110V.powerOn();
+        button.click("Event Message: click 1");
+        button.click("Event Message: click 2");
+        button.click("Event Message: click 3");
+        button.click("Event Message: click 4");
     }
 }
